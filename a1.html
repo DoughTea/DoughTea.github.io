@@ -74,12 +74,41 @@
   <body>
     <h2>Schematic and Equations</h2>
     <div class="header">
-      <img src="A1Schematic2.jpeg" />
+      <img src="A1Schematic.jpeg" />
       <p>I picked these values for the resistors because I wanted the LEDs to get progressively darker. I also knew that I wanted to keep the current below 20 mAh. 
         So I started with the two resistors that would get me close to 20 mAh with a red led being powered by 5v. This ended up
         being two 100 ohm resistors. From there I just looked through the kit for the next largest resistor which was the 220 one.
         The next largest was then the 330 one, so I used that for the darkest. I also paired the 330 one with a blue LED which decreased the voltage more than the other LEDs.
       </p>
+    </div>
+  </body>
+
+  <br>
+  <br>
+
+  <body>
+    <h2>Additional questions</h2>
+    <div class="header">
+      <p>1: Graph where the X axis is time and the Y axis is voltage across the LEDs.</p>
+      <img src="Graph.jpeg" />
+    </div>
+    
+    <br>
+    <br>
+
+    <div>
+      <p>2: How many LEDs could you blink independently with your Arduino? How much current would that draw?</p>
+      <br>
+      <p>You could blink up to the number of pins on the Arduino, which is 14. But you have to be careful not to draw too much current. Looking online an Arduino can handle 200 mA max so if you did 14 mA per pin then you would be fine. If you were to run them all at 20 mA like we have been doing then it would be 280 mA, too many for the Arduino.</p>
+    </div>
+        
+    <br>
+    <br>
+    
+    <div>
+      <p>3: How fast do you need to blink your LEDs until you no longer can tell that they are blinking?</p>
+      <br>
+      <p>I started at 200 ms then went down, around 15 ms it became harder to see. It looked like it never completely turned off, but it was still getting darker and lighter. But that effect stopped completely around 10-11 ms. At that point it looked the same as when it stays on.</p>
     </div>
   </body>
 </html>
