@@ -7,12 +7,79 @@
     <title>Example Student's HCDE 439 Physical Computing Page!</title>
 
     <link href="style.css" rel="stylesheet" type="text/css" />
+    <link href="prism.css" rel="stylesheet"  />
   </head>
   <body>
-    <h1>Example Student's Assignment 1!</h1>
+    <h1>Assignment 1: Blink!</h1>
     <div class="header">
-      <img src="red-panda.jpg" />
-      <p>Here is all the documentation for assignment 1!</p>
+      <img src="A1.gif" />
+      <p>On the left you can see a gif of the assignment working. 
+        It blinks through the three LEDs and then repeats the process</p>
+    </div>
+  </body>
+  
+  <br>
+  <br>
+
+  <body>
+    <h2>Code</h2>
+    <div>
+      <pre>
+      <code class="language-arduino line-numbers">
+        /*
+        Blink
+
+        There are three LEDs, using pins 13 through 11.
+        It turns on and off pin 13, then does the same for 12, and lastly the same for 11.
+        It will continue this loop forever.
+
+        modified 8 May 2014
+        by Scott Fitzgerald
+        modified 2 Sep 2016
+        by Arturo Guadalupi
+        modified 8 Sep 2016
+        by Colby Newman
+        modified 8 Jan 2024
+        by Andrew Doty
+      */
+
+      // the setup function runs once when you press reset or power the board
+      void setup() {
+        pinMode(LED_BUILTIN, OUTPUT);  // initialize digital pin LED_BUILTIN as an output.
+      }
+
+      // the loop function runs over and over again forever
+      void loop() {
+        digitalWrite(13, HIGH);  // turn the LED connected to the 13th pin on 
+        delay(500);                      // wait for half a second
+        digitalWrite(13, LOW);  // turn the LED connected to the 13th pin off 
+
+        digitalWrite(12, HIGH);  // turn the LED connected to the 12th pin on
+        delay(500);                      // wait for half a second
+        digitalWrite(12, LOW);  // turn the LED connected to the 13th pin off
+
+        digitalWrite(11, HIGH);  // turn the LED connected to the 11th pin on
+        delay(500);                      // wait for half a second
+        digitalWrite(11, LOW);  // turn the LED connected to the 11th pin off
+      }
+      </code>
+      </pre>
+    </div>
+    <script src="prism.js"></script>
+  </body>
+
+  <br>
+  <br>
+
+  <body>
+    <h2>Schematic and Equations</h2>
+    <div class="header">
+      <img src="A1Schematic2.jpeg" />
+      <p>I picked these values for the resistors because I wanted the LEDs to get progressively darker. I also knew that I wanted to keep the current below 20 mAh. 
+        So I started with the two resistors that would get me close to 20 mAh with a red led being powered by 5v. This ended up
+        being two 100 ohm resistors. From there I just looked through the kit for the next largest resistor which was the 220 one.
+        The next largest was then the 330 one, so I used that for the darkest. I also paired the 330 one with a blue LED which decreased the voltage more than the other LEDs.
+      </p>
     </div>
   </body>
 </html>
