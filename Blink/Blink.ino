@@ -21,19 +21,22 @@
 // the setup function runs once when you press reset or power the board
 void setup() {
   pinMode(LED_BUILTIN, OUTPUT);  // initialize digital pin LED_BUILTIN as an output.
+ pinMode(12, OUTPUT);  // initialize digital pin LED_BUILTIN as an output.
+  pinMode(11, OUTPUT);  // initialize digital pin LED_BUILTIN as an output.
+   
 }
 
 // the loop function runs over and over again forever
 void loop() {
   digitalWrite(13, HIGH);  // turn the LED connected to the 13th pin on 
-  delay(500);                      // wait for half a second
-  digitalWrite(13, LOW);  // turn the LED connected to the 13th pin off 
+  // delay(500);                      // wait for half a second
+  // digitalWrite(13, LOW);  // turn the LED connected to the 13th pin off 
 
   digitalWrite(12, HIGH);  // turn the LED connected to the 12th pin on
-  delay(500);                      // wait for half a second
-  digitalWrite(12, LOW);  // turn the LED connected to the 13th pin off
+  // delay(500);                      // wait for half a second
+  // digitalWrite(12, LOW);  // turn the LED connected to the 13th pin off
 
   digitalWrite(11, HIGH);  // turn the LED connected to the 11th pin on
-  delay(500);                      // wait for half a second
-  digitalWrite(11, LOW);  // turn the LED connected to the 11th pin off
+  // delay(500);                      // wait for half a second
+  // digitalWrite(11, LOW);  // turn the LED connected to the 11th pin off
 }
