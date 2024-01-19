@@ -4,15 +4,125 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
 
-    <title>Example Student's HCDE 439 Physical Computing Page!</title>
+    <title>Andrew Doty's HCDE 439 Physical Computing Page!</title>
 
     <link href="style.css" rel="stylesheet" type="text/css" />
+    <link href="prism.css" rel="stylesheet"  />
   </head>
   <body>
-    <h1>Example Student's Assignment 2!</h1>
+    <h1>Assignment 1: Blink!</h1>
     <div class="header">
-      <img src="red-panda.jpg" />
-      <p>Here is all the documentation for assignment 2!</p>
+      <img src="A2.gif" />
+      <img src="pictureA2.jpeg"/>
+    </div>
+    <div>
+      <p>On the left you can see a gif of the assignment working. 
+        It fades through the three LEDs and then repeats the process when the button is pressed.
+      </p>
+    </div>
+  </body>
+  
+  <br>
+  <br>
+
+  <body>
+    <h2>Code</h2>
+    <div>
+      <pre>
+      <code class="language-arduino line-numbers">
+        // constants won't change. They're used here to set pin numbers:
+        const int buttonPin = 13;  // the number of the pushbutton pin
+        const int ledPin9 = 9;    // the number of the LED pin
+        const int ledPin10 = 10;    // the number of the LED pin
+        const int ledPin11 = 11;    // the number of the LED pin
+
+
+        // variables will change:
+        int buttonState = 0;  // variable for reading the pushbutton status
+
+        int brightness = 0;  // Starting brightness of the led 
+        int fadeAmount = 1;  // how many points to fade the LED by
+
+        void setup() {
+          // initialize the LED pins as an output:
+          pinMode(ledPin9, OUTPUT); // 
+          pinMode(ledPin10, OUTPUT);
+          pinMode(ledPin11, OUTPUT);
+          // initialize the pushbutton pin as an input:
+          pinMode(buttonPin, INPUT);
+        }
+
+        void loop() {
+          buttonState = digitalRead(buttonPin);  // read the state of the pushbutton value: 
+          // check if the pushbutton is pressed. If it is, fade through all the leds
+          if (buttonState == HIGH) {
+            fadeLED(ledPin9); // fade led on pin 9
+            fadeLED(ledPin10); // fade led on pin 10
+            fadeLED(ledPin11); // fade led on pin 11
+          } else {
+            digitalWrite(ledPin9, LOW);
+            digitalWrite(ledPin10, LOW);
+            digitalWrite(ledPin11, LOW);
+          }
+          
+        }
+
+        void fadeLED(int LEDnum) {
+            int brightness = 0;  // sets the initial brightness to zero
+            for (int i = 0; i < 255 * 2; i++) { // Goes through a cycle of getting brighter then dimmer
+              analogWrite(LEDnum, brightness);    // set the brightness of pin 9:
+              brightness = brightness + fadeAmount;     // change the brightness for next time through the loop:
+
+              // reverse the direction of the fading at the ends of the fade:
+              if (brightness <= 0 || brightness >= 255) {
+                fadeAmount = -fadeAmount; // Changes the fade amount to be inverse, so that it reverses direction
+              }
+              delay(1); // Adds a delay before changing the brightness again. Makes the fade slower
+            }
+            digitalWrite(LEDnum, 0); // Resets the led to be off
+        }
+      </code>
+      </pre>
+    </div>
+    <script src="prism.js"></script>
+  </body>
+
+  <br>
+  <br>
+
+  <body>
+    <h2>Schematic and Equations</h2>
+    <div class="header">
+      <img src="A2Schematic.jpeg" />
+    </div>
+    <div>
+      <p>I limited the current going through the button by added a 220 ohm resistor. I chose this one in part because we have so many
+        but also because it would keep the current less than 40 mA. The reason I wanted to keep it less than 40 mA is because that is 
+        the max that a single pin can handle. By doing it this way we are much lower than the maximum current allowed.
+      </p>
+    </div>
+  </body>
+
+  <br>
+  <br>
+
+  <body>
+    <h2>Additional questions</h2>
+    <div class="header">
+      <p>1: Chart where the X axis is time and the Y axis is voltage.</p>
+      <img src="A2Graph.jpeg" />
+    </div>
+    
+    <br>
+    <br>
+
+    <div>
+      <p>2: Given your schematic, circuit, and firmware, assuming the only thing that draws current is your LEDs, how long would your circuit run if powered by a 1200 mAh battery?</p>
+      <br>
+      <p>
+        My three LEDs draw 15, 7.7, and 15 mA. Which is 37.7 mA. The battery is 1200 mAh. So we can just do 1200 / 37.7 which
+        gives us 31.83 hours.
+      </p>
     </div>
   </body>
 </html>
