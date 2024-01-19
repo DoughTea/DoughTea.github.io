@@ -121,7 +121,14 @@
       <br>
       <p>
         My three LEDs draw 15, 7.7, and 15 mA. Which is 37.7 mA. The battery is 1200 mAh. So we can just do 1200 / 37.7 which
-        gives us 31.83 hours.
+        gives us 31.83 hours. This is assuming that all of the LEDs are on the whole time. If we want to know how long it 
+        would last with the button pressed and it running in a cycle we first should find out how long a cycle is and how much 
+        power it draws during it. (15mh * (.61sec * 1/3600 [to convert hours to seconds])) is .00254 mhA during the first and 
+        third LED. (7.7mh * (.61sec * 1/3600 [to convert hours to seconds])) is .00131 during the second LED. So in 1.83 seconds
+        it uses .00639 mhA. 1200 / .00639 = 187793.42 which times 1.83 is 343,662 seconds. Which gives us our anwer of 95.5 hours.
+        Which makes sense since it is 3 times longer than if they were all running at once. We could have just done 31.83 * 3 to
+        get our answer, but then we would have missed out on a lot of fun math. 
+
       </p>
     </div>
   </body>
