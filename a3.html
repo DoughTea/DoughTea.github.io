@@ -12,12 +12,13 @@
   <body>
     <h1>Assignment 1: Blink!</h1>
     <div class="header">
-      <img src="A2.gif" />
-      <img src="pictureA2.jpeg"/>
+      <img src="A3.gif" />
+      <img src="pictureA3.jpeg"/>
     </div>
     <div>
       <p>On the left you can see a gif of the assignment working. 
-        It fades through the three LEDs and then repeats the process when the button is pressed.
+        This is pre calibrated and starts with my finger on it to warm it up. Once I let go you can see it slowly fade 
+        down from white to red to yellow to blue then finally off. This shows us that the temperature sensor is getting cooler.
       </p>
     </div>
   </body>
@@ -30,56 +31,119 @@
     <div>
       <pre>
       <code class="language-arduino line-numbers">
+        // Andrew Doty wi24
+        // HCDE 439
+        // 1/26/2024
+        
         // constants won't change. They're used here to set pin numbers:
-        const int buttonPin = 13;  // the number of the pushbutton pin
-        const int ledPin9 = 9;    // the number of the LED pin
-        const int ledPin10 = 10;    // the number of the LED pin
-        const int ledPin11 = 11;    // the number of the LED pin
-
-
-        // variables will change:
-        int buttonState = 0;  // variable for reading the pushbutton status
-
-        int brightness = 0;  // Starting brightness of the led 
-        int fadeAmount = 1;  // how many points to fade the LED by
-
+        const int ledPin0 = 10;    // the number of the LED pin
+        const int ledPin1 = 11;    // the number of the LED pin
+        const int ledPin2 = 12;    // the number of the LED pin
+        const int ledPin3 = 13;    // the number of the LED pin
+        
+        // Variables for calibrating the max, min, average, 25th percentile, 
+        //    75th percentile, and current temp 
+        int max = 0; 
+        int min = 1023;
+        int mid = 0;
+        int mid25 = 0;
+        int mid75 = 0;
+        int temp = 0;
+        
+        // Used by the map function to help in debugging which pattern of LEDs 
+        //    should be lit
+        int whichLED = 0;
+        
         void setup() {
+          // open the serial port at 9600 bps, allows us to see output in the console
+          Serial.begin(9600); 
+        
           // initialize the LED pins as an output:
-          pinMode(ledPin9, OUTPUT); // 
-          pinMode(ledPin10, OUTPUT);
-          pinMode(ledPin11, OUTPUT);
-          // initialize the pushbutton pin as an input:
-          pinMode(buttonPin, INPUT);
-        }
-
-        void loop() {
-          buttonState = digitalRead(buttonPin);  // read the state of the pushbutton value: 
-          // check if the pushbutton is pressed. If it is, fade through all the leds
-          if (buttonState == HIGH) {
-            fadeLED(ledPin9); // fade led on pin 9
-            fadeLED(ledPin10); // fade led on pin 10
-            fadeLED(ledPin11); // fade led on pin 11
-          } else {
-            digitalWrite(ledPin9, LOW);
-            digitalWrite(ledPin10, LOW);
-            digitalWrite(ledPin11, LOW);
-          }
+          pinMode(ledPin0, OUTPUT); // 
+          pinMode(ledPin1, OUTPUT);
+          pinMode(ledPin2, OUTPUT);
+          pinMode(ledPin3, OUTPUT);
           
+          // Calls the recalibrate function to find max, min, average, 25th percentile,
+          //    75th percentile, and current temp 
+          recalibrate();
         }
-
-        void fadeLED(int LEDnum) {
-            int brightness = 0;  // sets the initial brightness to zero
-            for (int i = 0; i < 255 * 2; i++) { // Goes through a cycle of getting brighter then dimmer
-              analogWrite(LEDnum, brightness);    // set the brightness of pin 9:
-              brightness = brightness + fadeAmount;     // change the brightness for next time through the loop:
-
-              // reverse the direction of the fading at the ends of the fade:
-              if (brightness <= 0 || brightness >= 255) {
-                fadeAmount = -fadeAmount; // Changes the fade amount to be inverse, so that it reverses direction
-              }
-              delay(1); // Adds a delay before changing the brightness again. Makes the fade slower
+        
+        // Main loop that the code runs through
+        void loop() {
+          // Reads the value at the A0 port
+          temp = analogRead(A0);
+          // Maps the current temp to the range of possible led combos
+          whichLED = map(temp, min, max, 0, 7);
+        
+          // Prints out information for debugging
+          Serial.print(temp);
+          Serial.print(" : ");
+          Serial.println(whichLED);
+          
+          // Calls the displayTemp function which takes the current 
+          //    temperature and determines which leds to light up 
+          displayTemp(temp);
+        }
+        
+        
+        // Based on the input temperature determines which LEDs should light up
+        void displayTemp(int temp) {
+          // If the temp is higher than min and at or lower than the 25th percentile
+          if (min < temp && temp <= mid25) {
+            // lights up blue LED
+            digitalWrite(ledPin0, HIGH);
+          } 
+          // If the temp is between the 25th percentile and average (Inclusive)
+          if (mid25 <= temp && temp <= mid) {
+            // Light up yellow LED
+            digitalWrite(ledPin1, HIGH);
+          }
+          // If the temp is between the average and 75th percentile (Inclusive)
+          if (mid <= temp && temp <= mid75) {
+            // Light up the red LED
+            digitalWrite(ledPin2, HIGH);
+          }
+          // If the temp is at or higher than the 75th percentile
+          if (temp >= mid75) {
+            // Light up white LED
+            digitalWrite(ledPin3, HIGH);
+          }
+          // Add a delay for smoothing
+          delay(100);
+        
+          // Turn off all the LEDs (for easy reset)
+          digitalWrite(ledPin0, LOW);
+          digitalWrite(ledPin1, LOW);
+          digitalWrite(ledPin2, LOW);
+          digitalWrite(ledPin3, LOW);
+        }
+        
+        // Recalibrates the min and max using data over the next 10 seconds
+        void recalibrate() {
+          // loops through 100 times (100ms each time is 10 seconds total)
+          for (int time = 0; time < 100; time++) {
+            // Get the current temp from the A0 port
+            temp = analogRead(A0);
+        
+            // Check if temp is new max
+            if (temp > max) {
+              // set min
+              max = temp;
             }
-            digitalWrite(LEDnum, 0); // Resets the led to be off
+            // Check if temp is new min
+            if (temp < min) {
+              // set min
+              min = temp;
+            }
+            // wait 100 ms
+            delay(100);
+          }
+        
+          // After the loop does some math to find the 25th, 50th, and 75th percentiles
+          mid = (max + min) / 2;
+          mid25 = (min + mid) / 2;
+          mid75 = (mid + max) /2; 
         }
       </code>
       </pre>
@@ -93,14 +157,28 @@
   <body>
     <h2>Schematic and Equations</h2>
     <div class="header">
-      <img src="A2Schematic.jpeg" />
+      <img src="A3Schematic.jpeg" />
     </div>
     <div>
-      <p>I limited the current going through the button by added a 220 ohm resistor. I chose this one in part because we have so many
-        but also because it would keep the current less than 40 mA. The reason I wanted to keep it less than 40 mA is because that is 
-        the max that a single pin can handle. By doing it this way we are much lower than the maximum current allowed. I used 220 ohm
-        resistors for the LEDs because I had used them before and know that they limit the current enough. Redoing the calculations 
-        showed that they do limit the current to be below 25mA.
+      <p>I limited the current using these resistors becasue I wanted to prevent the leds from burning out. As with the last
+        two assignments we know that using a 220 ohm resistor with 5v limits the current enough. So that is what I did for the
+        main leds. For the green led that is always on, I wanted it to be a lot dimmer, I used a 2k ohm resistor to make it a 
+        lot dimmer. It still allows for us to easily tell when it is on without being blinded by a bright light.
+      </p>
+    </div>
+
+    <br>
+    <br>
+    
+    <h2>Voltage divider</h2>
+    <div class="header">
+      <img src="A3Schematic.jpeg" />
+    </div>
+    <div>
+      <p>I limited the current using these resistors becasue I wanted to prevent the leds from burning out. As with the last
+        two assignments we know that using a 220 ohm resistor with 5v limits the current enough. So that is what I did for the
+        main leds. For the green led that is always on, I wanted it to be a lot dimmer, I used a 2k ohm resistor to make it a 
+        lot dimmer. It still allows for us to easily tell when it is on without being blinded by a bright light.
       </p>
     </div>
   </body>
@@ -111,7 +189,7 @@
   <body>
     <h2>Additional questions</h2>
     <div class="header">
-      <p>1: Chart where the X axis is time and the Y axis is voltage.</p>
+      <p>1: In your voltage divider, can the variable resistor be either R1 or R2 or does it need to be one or the other? Justify your answer with example calculations.</p>
       <img src="A2Graph.jpeg" />
     </div>
     
