@@ -178,13 +178,16 @@
     
     <h2>Voltage divider</h2>
     <div class="header">
-      <img src="A3Schematic.jpeg" />
+      <img src="A3Schematic2.jpeg" />
     </div>
     <div>
-      <p>I limited the current using these resistors becasue I wanted to prevent the LEDs from burning out. As with the last
-        two assignments we know that using a 220 ohm resistor with 5v limits the current enough. So that is what I did for the
-        main LEDs. For the green LED that is always on, I wanted it to be a lot dimmer, so I used a 2k ohm resistor to make it a 
-        lot dimmer. It still allows for us to easily tell when it is on without being blinded by a bright light.
+      <p>The values that you might read, if the thermister has zero resistance, is shown in the image above to be 4.94 volts.
+        I chose R1 by looking at the average value that I was reading out in the monitor. It was ranged around 20 only changing by 
+        around 10 in either direction.
+        I got this by using the formulas that we were shown in class, then just plugged and chugged. I know this is an appropriate 
+        resistance to have because when putting this together I plan on it all having 5v, so if it is less that is fine. I also 
+        know that it is appropriate because there is no sensitive devices on this board that I have to worry about. The most 
+        sensitive ones are the LEDs which are fine because the current is less than 25 mA.
       </p>
     </div>
   </body>
@@ -195,26 +198,38 @@
   <body>
     <h2>Additional questions</h2>
     <div class="header">
-      <p>1: In your voltage divider, can the variable resistor be either R1 or R2 or does it need to be one or the other? Justify your answer with example calculations.</p>
-      <img src="A2Graph.jpeg" />
+      <h4>1: In your voltage divider, can the variable resistor be either R1 or R2 or does it need to be one or the other? Justify your answer with example calculations.</p>
+    </div>
+    <p>It can be either R1 or R2 in most cases. The only case you have to worry about is if R2 is zero because then it is not a voltage
+      divider. But since the question is about voltage dividers and it would not be a voltage divider in that case we should be good. But 
+      it would be a good idea to add a fixed resistor just for safety. An 
+      example could be with though of if R1 is fixed then the ratio changes as R2 changes. The change would approach an asymptote (V) since 
+      the equation becomes (R2)/(R1 + R2) * V. This of course breaks down at 0 and is no longer a voltage divider. In the other case where R2
+      is fixed as R1 increases the voltage out decreases at a fixed rate.
+      </p>
+
+    <br>
+    <br>
+
+    <div>
+      <h4>2. Draw a graph where the x-axis is time and the y-axis is voltage. Plot the voltage at V-measure of your voltage divider of your shared gif.</h4>
+      <p><img src="A3Graph.jpeg" /></p>
+      <p>
+        The graph does not change very much because the thermister does not change very much. So notice how the graph starts at 4 and still
+        barely shows a rise in the graph.
+      </p>
     </div>
     
     <br>
     <br>
 
     <div>
-      <p>2: Given your schematic, circuit, and firmware, assuming the only thing that draws current is your LEDs, how long would your circuit run if powered by a 1200 mAh battery?</p>
-      <br>
+      <h4>3. AnalogWrite and analogRead are respectively 8-bit and 10-bit values. Imagine you had 10-bit PWM and a 16-bit analog-to-digital converter instead. How would this change your map() code? Explain your answer..</h4>
       <p>
-        My three LEDs draw 15, 7.7, and 15 mA. Which is 37.7 mA. The battery is 1200 mAh. So we can just do 1200 / 37.7 which
-        gives us 31.83 hours. This is assuming that all of the LEDs are on the whole time. If we want to know how long it 
-        would last with the button pressed and it running in a cycle we first should find out how long a cycle is and how much 
-        power it draws during it. (15mh * (.61sec * 1/3600 [to convert hours to seconds])) is .00254 mhA during the first and 
-        third LED. (7.7mh * (.61sec * 1/3600 [to convert hours to seconds])) is .00131 during the second LED. So in 1.83 seconds
-        it uses .00639 mhA. 1200 / .00639 = 187793.42 which times 1.83 is 343,662 seconds. Which gives us our anwer of 95.5 hours.
-        Which makes sense since it is 3 times longer than if they were all running at once. We could have just done 31.83 * 3 to
-        get our answer, but then we would have missed out on a lot of fun math. 
-
+        You would have to map the values to account for the much broader range in 16 bit. In 10 but there are only 1024 possible values where as in 
+        16 bit there are 65536 possible values. So you would have to map a 0 in 10 bit to be a 0 in 16 bit and a 1023 in 10 bit to be a 65535 in 16
+        bit. The reason it is one less is because you start from zero in code. The main concern would be loss of resolution when converting from 16
+        bit to 10 bit, since it can't store as much data. 
       </p>
     </div>
   </body>
