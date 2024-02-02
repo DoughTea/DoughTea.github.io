@@ -10,14 +10,14 @@
     <link href="prism.css" rel="stylesheet"  />
   </head>
   <body>
-    <h1>Assignment 1: Blink!</h1>
+    <h1>Assignment 4: Libraries!</h1>
     <div class="header">
-      <img src="A2.gif" />
-      <img src="pictureA2.jpeg"/>
+      <img src="A4.gif" />
+      <img src="pictureA4.jpeg"/>
     </div>
     <div>
       <p>On the left you can see a gif of the assignment working. 
-        It fades through the three LEDs and then repeats the process when the button is pressed.
+      This is pre calibrated. It starts with my finger off the capacitive sensor(white wire). Then when I put my finger on it, the servo moves.
       </p>
     </div>
   </body>
@@ -30,56 +30,68 @@
     <div>
       <pre>
       <code class="language-arduino line-numbers">
-        // constants won't change. They're used here to set pin numbers:
-        const int buttonPin = 13;  // the number of the pushbutton pin
-        const int ledPin9 = 9;    // the number of the LED pin
-        const int ledPin10 = 10;    // the number of the LED pin
-        const int ledPin11 = 11;    // the number of the LED pin
+        // Import packages
+        #include <CapacitiveSensor.h>
+        #include <Servo.h> 
 
+        // Declare Servo 
+        Servo myServo;
 
-        // variables will change:
-        int buttonState = 0;  // variable for reading the pushbutton status
+        CapacitiveSensor   cs_4_2 = CapacitiveSensor(4,2);    	// 1 megohm resistor between pins 4 & 2, pin 2 is sensor pin, add wire, metal thing
 
-        int brightness = 0;  // Starting brightness of the led 
-        int fadeAmount = 1;  // how many points to fade the LED by
+        // Variables for calibration
+        int max = 0; 
+        int min = 1023;
+        long touchValue;
+        int toMove;
+
 
         void setup() {
-          // initialize the LED pins as an output:
-          pinMode(ledPin9, OUTPUT); // 
-          pinMode(ledPin10, OUTPUT);
-          pinMode(ledPin11, OUTPUT);
-          // initialize the pushbutton pin as an input:
-          pinMode(buttonPin, INPUT);
+          cs_4_2.set_CS_AutocaL_Millis(0xFFFFFFFF); 	// turn off autocalibrate on channel 1 - just as an example
+          Serial.begin(9600); // for monitor
+          myServo.attach(9); // Set servo pin
+          recalibrate(); // calibrate sensor
         }
 
-        void loop() {
-          buttonState = digitalRead(buttonPin);  // read the state of the pushbutton value: 
-          // check if the pushbutton is pressed. If it is, fade through all the leds
-          if (buttonState == HIGH) {
-            fadeLED(ledPin9); // fade led on pin 9
-            fadeLED(ledPin10); // fade led on pin 10
-            fadeLED(ledPin11); // fade led on pin 11
-          } else {
-            digitalWrite(ledPin9, LOW);
-            digitalWrite(ledPin10, LOW);
-            digitalWrite(ledPin11, LOW);
-          }
+        void loop()               	 
+        {
+          //
+          touchValue =  cs_4_2.capacitiveSensor(30); // get value from capacitive sensor
+
+          Serial.println(touchValue);            	// print sensor output 1
+          delay(10);                         	// arbitrary delay to limit data to serial port
+
+          // Map the value so that we can use an easy scale
+          toMove = map(touchValue, min, max, 0, 10);
           
+          // Check if being touched
+          if (toMove >= 4) {
+            myServo.write(180); // Rotate counter clockwise
+          } else {
+            myServo.write(0); // Rotate clockwise
+          }
         }
 
-        void fadeLED(int LEDnum) {
-            int brightness = 0;  // sets the initial brightness to zero
-            for (int i = 0; i < 255 * 2; i++) { // Goes through a cycle of getting brighter then dimmer
-              analogWrite(LEDnum, brightness);    // set the brightness of pin 9:
-              brightness = brightness + fadeAmount;     // change the brightness for next time through the loop:
+        // Recalibrates the min and max using data over the next 10 seconds
+        void recalibrate() {
+          // loops through 100 times (100ms each time is 10 seconds total)
+          for (int time = 0; time < 100; time++) {
+            // Get the current temp from the A0 port
+            touchValue =  cs_4_2.capacitiveSensor(30);
 
-              // reverse the direction of the fading at the ends of the fade:
-              if (brightness <= 0 || brightness >= 255) {
-                fadeAmount = -fadeAmount; // Changes the fade amount to be inverse, so that it reverses direction
-              }
-              delay(1); // Adds a delay before changing the brightness again. Makes the fade slower
+            // Check if temp is new max
+            if (touchValue > max) {
+              // set min
+              max = touchValue;
             }
-            digitalWrite(LEDnum, 0); // Resets the led to be off
+            // Check if temp is new min
+            if (touchValue < min) {
+              // set min
+              min = touchValue;
+            }
+            // wait 100 ms
+            delay(100);
+          }
         }
       </code>
       </pre>
@@ -93,14 +105,10 @@
   <body>
     <h2>Schematic and Equations</h2>
     <div class="header">
-      <img src="A2Schematic.jpeg" />
+      <img src="A4Schematic.jpeg" />
     </div>
     <div>
-      <p>I limited the current going through the button by added a 220 ohm resistor. I chose this one in part because we have so many
-        but also because it would keep the current less than 40 mA. The reason I wanted to keep it less than 40 mA is because that is 
-        the max that a single pin can handle. By doing it this way we are much lower than the maximum current allowed. I used 220 ohm
-        resistors for the LEDs because I had used them before and know that they limit the current enough. Redoing the calculations 
-        showed that they do limit the current to be below 25mA.
+      <p> I used a 1 mega Ohm resistor because that is what was used in the example in class. We used this so that it is easy to detect when we have given the electrons a better way to groundthemselves. If we wanted to make it more sensitive we could increase the resistor.
       </p>
     </div>
   </body>
@@ -111,26 +119,32 @@
   <body>
     <h2>Additional questions</h2>
     <div class="header">
-      <p>1: Chart where the X axis is time and the Y axis is voltage.</p>
-      <img src="A2Graph.jpeg" />
+      <p>1: Say you are using a servo motor you attach to pin 9.</p>
+      <img src="A4Graph.jpeg" />
+      <br>
+      <p> It would look like this because it would only get 5v when moving. Then during the delay there would be no voltage. It does always have current, even when not moving.</p>
     </div>
     
     <br>
     <br>
 
     <div>
-      <p>2: Given your schematic, circuit, and firmware, assuming the only thing that draws current is your LEDs, how long would your circuit run if powered by a 1200 mAh battery?</p>
+      <p>2: Your input device is slightly broken, leading it to give us an erroneous reading 1% of the time. How can we address this? Answer in (pseudo)code.</p>
       <br>
       <p>
-        My three LEDs draw 15, 7.7, and 15 mA. Which is 37.7 mA. The battery is 1200 mAh. So we can just do 1200 / 37.7 which
-        gives us 31.83 hours. This is assuming that all of the LEDs are on the whole time. If we want to know how long it 
-        would last with the button pressed and it running in a cycle we first should find out how long a cycle is and how much 
-        power it draws during it. (15mh * (.61sec * 1/3600 [to convert hours to seconds])) is .00254 mhA during the first and 
-        third LED. (7.7mh * (.61sec * 1/3600 [to convert hours to seconds])) is .00131 during the second LED. So in 1.83 seconds
-        it uses .00639 mhA. 1200 / .00639 = 187793.42 which times 1.83 is 343,662 seconds. Which gives us our anwer of 95.5 hours.
-        Which makes sense since it is 3 times longer than if they were all running at once. We could have just done 31.83 * 3 to
-        get our answer, but then we would have missed out on a lot of fun math. 
+        The easiest way to fix this is have it compare the last value to the current value. If the values are very different (indicating a large jump), it is reasonable to believe that it might be a erroneous reading. So in that case we can discard it. 
+        
+      </p>
+    </div>
 
+    <br>
+    <br>
+
+    <div>
+      <p>3:  Your input device is slightly noisy, leading the measurement to randomly deviate from the true measurement up or down by 10%. How can we address this? Answer in (pseudo)code.</p>
+      <br>
+      <p>
+        You could address this by averaging out the numbers you get over a set amount of time and using that as the reading. An example could be splitting measurements of 1 second over the course of 10 seconds, during the 1 second you are saving the output to a list. At the end of the second you average the list and use that as the reading for that second. This would prevent the outliars from causing problems.
       </p>
     </div>
   </body>
