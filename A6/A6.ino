@@ -17,12 +17,16 @@ void setup()
 void loop()
 {
   Serial.println(digitalRead(BUTTON_PIN));
-  
-  if (Serial.read() == 3) {
-    digitalWrite(10, HIGH);
-  } else {
-    digitalWrite(10, LOW);
-  }
+
+  if (Serial.available() > 0) {   // if there's serial data 
+    int inByte = Serial.read(); // read it
+    if (Serial.read() == 3) {
+      digitalWrite(10, HIGH);
+    } else {
+      digitalWrite(10, LOW);
+    }
+ }
+
 
   delay(50);
 }

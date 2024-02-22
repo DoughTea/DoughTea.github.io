@@ -12,7 +12,7 @@ let locked = false;
 let xOffset = 0.0;
 let yOffset = 0.0;
 
-const serial = new p5.WebSerial();
+// const serial = new p5.WebSerial();
 
 function setup() {
   setupSerial(); // Run our serial setup function (below)
@@ -33,6 +33,7 @@ function setup() {
   strokeWeight(2);
 
   // serial.getPorts();
+  port.write(3)
 }
 
 function draw() {
@@ -43,16 +44,18 @@ function draw() {
   if (str.length == 0) return; // If we didn't read anything, return.
 
   // trim the whitespace (the newline) and convert the string to a number
-  const buttonState = Number(str.trim());
+  const arduinoInput = Number(str.trim());
+
+  console.log(arduinoInput)
 
   // Change text and colors based on button state. In p5, you can set colors
   // using standard CSS color names as well as many other color formats.
-  if (buttonState === 0) {
+  if (arduinoInput === 0) {
     // If the button is not pressed
     background("darkcyan"); // Background color
     fill("coral"); // Fill color for the text
     text("not pressed", windowWidth / 2, windowHeight / 2); // Position text in center of the screen
-  } else if (buttonState === 1) {
+  } else if (arduinoInput === 1) {
     // If the button is pressed
     background("lightskyblue"); // Background color
     fill("yellow"); // Fill color for the text
@@ -65,7 +68,7 @@ function draw() {
     mouseY > by - boxSize &&
     mouseY < by + boxSize
   ) {
-    serial.write(3);
+    // port.write(3);
   }
   rect(bx, by, boxSize, boxSize);
 }
@@ -113,13 +116,7 @@ function onConnectButtonClicked() {
   }
 }
 
-function mousePressed() {
-  if (overBox) {
-    locked = true;
-    fill(255, 255, 255);
-  } else {
-    locked = false;
-  }
-  xOffset = mouseX - bx;
-  yOffset = mouseY - by;
+function keyPressed() {
+	//console.log("writing key");
+	port.write(3);
 }
