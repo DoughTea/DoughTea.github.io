@@ -19,8 +19,9 @@ void loop()
   Serial.println(digitalRead(BUTTON_PIN));
 
   if (Serial.available() > 0) {   // if there's serial data 
-    int inByte = Serial.read(); // read it
-    if (Serial.read() == 3) {
+    char inByte = Serial.read(); // read it
+    Serial.println(inByte);
+    if (inByte == '3') {
       digitalWrite(10, HIGH);
     } else {
       digitalWrite(10, LOW);

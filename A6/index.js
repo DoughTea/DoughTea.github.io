@@ -46,7 +46,7 @@ function draw() {
   // trim the whitespace (the newline) and convert the string to a number
   const arduinoInput = Number(str.trim());
 
-  console.log(arduinoInput)
+  console.log(arduinoInput) // show in cosole what the arduino is printing
 
   // Change text and colors based on button state. In p5, you can set colors
   // using standard CSS color names as well as many other color formats.
@@ -68,7 +68,9 @@ function draw() {
     mouseY > by - boxSize &&
     mouseY < by + boxSize
   ) {
-    // port.write(3);
+    port.write(3);
+  } else {
+    port.write(0);
   }
   rect(bx, by, boxSize, boxSize);
 }
@@ -117,6 +119,6 @@ function onConnectButtonClicked() {
 }
 
 function keyPressed() {
-	//console.log("writing key");
-	port.write(3);
+	console.log("writing key");
+	port.write('3');
 }
