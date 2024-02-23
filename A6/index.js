@@ -4,15 +4,12 @@ let port, connectBtn; // Declare global variables
 
 var outData; // for data output
 
-let bx;
-let by;
-let boxSize = 75;
-let overBox = false;
-let locked = false;
-let xOffset = 0.0;
-let yOffset = 0.0;
-
-// const serial = new p5.WebSerial();
+let bx; // box x
+let by; //bo y
+let boxSize = 75; // box size
+let xOffset = 0.0; // box x
+let yOffset = 0.0; // boy y
+let input = [0, 0, 0]; // input format light, x, y
 
 function setup() {
   setupSerial(); // Run our serial setup function (below)
@@ -27,13 +24,12 @@ function setup() {
   textStyle(BOLD);
   textAlign(CENTER, CENTER);
 
+  // set initial box location to middle of page
   bx = width / 2.0;
   by = height / 2.0;
-  rectMode(RADIUS);
-  strokeWeight(2);
-
-  // serial.getPorts();
-  port.write(3)
+  rectMode(RADIUS); // determins how the rectangle parameters are interpreted
+  rect(Number(bx), Number(by), 20, 20); // draw rectangle
+  strokeWeight(2); // sets outlike
 }
 
 function draw() {
@@ -43,36 +39,12 @@ function draw() {
   let str = port.readUntil("\n"); // Read from the port until the newline
   if (str.length == 0) return; // If we didn't read anything, return.
 
-  // trim the whitespace (the newline) and convert the string to a number
-  const arduinoInput = Number(str.trim());
+  // Read the input and extract the x and y
+  let arr = str.trim().split(","); 
+  bx = Number(bx) + Number(arr[1]); // change the bx, x amount
+  by = Number(by) + Number(arr[2]); // change the by, y amount
+  rect(bx, by, 20, 20); // draw the rectangle
 
-  console.log(arduinoInput) // show in cosole what the arduino is printing
-
-  // Change text and colors based on button state. In p5, you can set colors
-  // using standard CSS color names as well as many other color formats.
-  if (arduinoInput === 0) {
-    // If the button is not pressed
-    background("darkcyan"); // Background color
-    fill("coral"); // Fill color for the text
-    text("not pressed", windowWidth / 2, windowHeight / 2); // Position text in center of the screen
-  } else if (arduinoInput === 1) {
-    // If the button is pressed
-    background("lightskyblue"); // Background color
-    fill("yellow"); // Fill color for the text
-    text("pressed!", windowWidth / 2, windowHeight / 2); // Position text in center of the screen
-  } 
-  
-  if ( // Test if the cursor is over the box
-    mouseX > bx - boxSize &&
-    mouseX < bx + boxSize &&
-    mouseY > by - boxSize &&
-    mouseY < by + boxSize
-  ) {
-    port.write(3);
-  } else {
-    port.write(0);
-  }
-  rect(bx, by, boxSize, boxSize);
 }
 
 // Three helper functions for managing the serial connection.
@@ -119,6 +91,8 @@ function onConnectButtonClicked() {
 }
 
 function keyPressed() {
-	console.log("writing key");
-	port.write('3');
+  // when the key is pressed, output three so the led lights
+  for (i = 0; i < 10; i++) { // do it for a bit so the led stays lit for a little
+    port.write('3');
+  }
 }
