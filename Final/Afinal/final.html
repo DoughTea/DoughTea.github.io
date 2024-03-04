@@ -80,40 +80,39 @@
             // Run in figure 8 a couple times
             for (int i = 0; i < 2; i++) {
               // turn right
-              setMotorR(speed, !reverse);
-              setMotorL(speed, reverse);
+              setMotorR(reverse);
+              setMotorL( reverse);
               delay(500);
 
               // forward
-              setMotorR(speed, !reverse);
-              setMotorL(speed, !reverse);
+              setMotorR(!reverse);
+              setMotorL(!reverse);
               delay(500);
 
               // turn left
-              setMotorR(speed, reverse);
-              setMotorL(speed, !reverse);
+              setMotorR(reverse);
+              setMotorL(!reverse);
               delay(500);
 
               // forward
-              setMotorR(speed, !reverse);
-              setMotorL(speed, !reverse);
+              setMotorR(!reverse);
+              setMotorL(!reverse);
               delay(500);
             }
           }
         }
 
         // Moves the right motor
-        void setMotorR(boolean reverse) {
+        void setMotorR(bool reverse) {
           digitalWrite(RIGHT_MOTOR, ! reverse);
           digitalWrite(RIGHT_MOTOR2, reverse);
         }
 
         // Moves the left motor
-        void setMotorL(boolean reverse) {
+        void setMotorL(bool reverse) {
           digitalWrite(LEFT_MOTOR, ! reverse);
           digitalWrite(LEFT_MOTOR2, reverse);
         }
-
       </code>
       </pre>
     </div>
