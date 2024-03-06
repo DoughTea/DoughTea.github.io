@@ -80,14 +80,14 @@
             // Run in figure 8 a couple times
             for (int i = 0; i < 2; i++) {
               // turn right
-              setMotorR(reverse);
-              setMotorL( reverse);
+              setMotorR(!reverse);
+              setMotorL(reverse);
               delay(500);
 
               // forward
               setMotorR(!reverse);
               setMotorL(!reverse);
-              delay(500);
+              delay(1000);
 
               // turn left
               setMotorR(reverse);
@@ -97,7 +97,7 @@
               // forward
               setMotorR(!reverse);
               setMotorL(!reverse);
-              delay(500);
+              delay(1000);
             }
           }
         }
