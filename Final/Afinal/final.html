@@ -10,18 +10,45 @@
     <link href="prism.css" rel="stylesheet"  />
   </head>
   <body>
-    <h1>Assignment 6: Talking to the web!</h1>
+    <h1>Final: Cat-ch!</h1>
     <div class="header">
-      <img src="final.gif" />
+      <video width="320" height="240" controls>
+        <source src="439Final.mov" type="video/mp4">
+      </video>
     </div>
     <div>
-      <p>Above you can see a gif of the assignment working. 
-      I can use the joystick to move the box on the screen. As I move the joystick further it moves faster. it moves in both the x and y direction. When I press a key on the keyboard the yellow light on the bread board turns on. Below is a picture of the circuit.
+      <p>Above you can see a video of the assignment working. 
+      In the end I was not able to get it to move. The motors did not have enough power. In the video you can see me trying to get it to move in several ways. First as intended. Then without the shell to reduce weight. Next with 2 batteries in series with me holding them to reduce weight. Lastly without the rubberbands to reduce traction. I didn't use the button to start or stop my project in the video, but it works and there is a slot for it in the back of the case. In the end my cats still like string, so they still had some fun.
       </p>
     </div>
-    <img src="pictureFinal.jpeg"/>
   </body>
-  
+  <div class="row">
+    <div class="column">
+      <img src="top.jpeg" alt="top" style="width:100%">
+    </div>
+    <div class="column">
+      <img src="bottom.jpeg" alt="bottom" style="width:100%">
+    </div>
+    <div class="column">
+      <img src="topNaked.jpeg" alt="top view" style="width:100%">
+    </div>
+  </div>
+
+  <p>
+    Here are some photos of the design. I modeled the enclosure and base in Inventor and then 3d printed them. I am not a huge fan of 3d modeling so this part was rough for me. Here is a list of the parts that I used. 
+  </p>
+
+  <ul>
+    <li>LEDs (for eyes)</li>
+    <li>2 x DC motor (for running)</li>
+    <li>9v battery x 2 (for power)</li>
+    <li>2 x Wheels w/ rubber bands(for wheels)</li>
+    <li>Assorted resistors (for current-limiting) </li>
+    <li>Shell (For enclosure)</li>
+    <li>Button (for go and stop)</li>
+    <li>L293D (for motor control)</li> 
+  </ul>
+
   <br>
   <br>
 
@@ -123,123 +150,14 @@
   <br>
 
   <body>
-    <h2>JS Code</h2>
-    <div>
-      <pre>
-      <code class="language-JavaScript line-numbers">
-        const BAUD_RATE = 9600; // This should match the baud rate in your Arduino sketch
-
-        let port, connectBtn; // Declare global variables
-        
-        var outData; // for data output
-        
-        let bx; // box x
-        let by; //bo y
-        let boxSize = 75; // box size
-        let xOffset = 0.0; // box x
-        let yOffset = 0.0; // boy y
-        let input = [0, 0, 0]; // input format light, x, y
-        
-        function setup() {
-          setupSerial(); // Run our serial setup function (below)
-        
-          // Create a canvas that is the size of our browser window.
-          // windowWidth and windowHeight are p5 variables
-          createCanvas(windowWidth, windowHeight);
-        
-          // p5 text settings. BOLD and CENTER are constants provided by p5.
-          // See the "Typography" section in the p5 reference: https://p5js.org/reference/
-          textFont("system-ui", 50);
-          textStyle(BOLD);
-          textAlign(CENTER, CENTER);
-        
-          // set initial box location to middle of page
-          bx = width / 2.0;
-          by = height / 2.0;
-          rectMode(RADIUS); // determins how the rectangle parameters are interpreted
-          rect(Number(bx), Number(by), 20, 20); // draw rectangle
-          strokeWeight(2); // sets outlike
-        }
-        
-        function draw() {
-          const portIsOpen = checkPort(); // Check whether the port is open (see checkPort function below)
-          if (!portIsOpen) return; // If the port is not open, exit the draw loop
-        
-          let str = port.readUntil("\n"); // Read from the port until the newline
-          if (str.length == 0) return; // If we didn't read anything, return.
-        
-          // Read the input and extract the x and y
-          let arr = str.trim().split(","); 
-          bx = Number(bx) + Number(arr[1]); // change the bx, x amount
-          by = Number(by) + Number(arr[2]); // change the by, y amount
-          rect(bx, by, 20, 20); // draw the rectangle
-        
-        }
-        
-        // Three helper functions for managing the serial connection.
-        
-        function setupSerial() {
-          port = createSerial();
-        
-          // Check to see if there are any ports we have used previously
-          let usedPorts = usedSerialPorts();
-          if (usedPorts.length > 0) {
-            // If there are ports we've used, open the first one
-            port.open(usedPorts[0], BAUD_RATE);
-          }
-        
-          // create a connect button
-          connectBtn = createButton("Connect to Arduino");
-          connectBtn.position(5, 5); // Position the button in the top left of the screen.
-          connectBtn.mouseClicked(onConnectButtonClicked); // When the button is clicked, run the onConnectButtonClicked function
-        }
-        
-        function checkPort() {
-          if (!port.opened()) {
-            // If the port is not open, change button text
-            connectBtn.html("Connect to Arduino");
-            // Set background to gray
-            background("gray");
-            return false;
-          } else {
-            // Otherwise we are connected
-            connectBtn.html("Disconnect");
-            return true;
-          }
-        }
-        
-        function onConnectButtonClicked() {
-          // When the connect button is clicked
-          if (!port.opened()) {
-            // If the port is not opened, we open it
-            port.open(BAUD_RATE);
-          } else {
-            // Otherwise, we close it!
-            port.close();
-          }
-        }
-        
-        function keyPressed() {
-          // when the key is pressed, output three so the led lights
-          for (i = 0; i < 10; i++) { // do it for a bit so the led stays lit for a little
-            port.write('3');
-          }
-        }        
-      </code>
-      </pre>
-    </div>
-    <script src="prism.js"></script>
-  </body>
-
-  <body>
-    <h2>Schematic and Equations</h2>
+    <h2>Schematic</h2>
     <div class="header">
-      <img src="A6Schematic.jpeg" />
+      <img src="schematic.jpeg" />
     </div>
     <div>
-      <p> This is a Schematic, we are using a 220 ohm resistor like we have in previous projects since that gives us below 20 mA. The calculation being (5-1.8) / 220 = 15 mA. I wanted to explain the analog read here. We will be getting values from 0-1023 from the analog read. We know this because it is on the docs for the joystick. Then we map it to -10 through 10 so that we can directly use that value to move it that many pixels.
+      <p> This is the Schematic, originally I was going to use two transitors, but I didn't have a fly-back diode so it didn't work. It was then suggested that I use an H bridge chip since this is what they are made for. Using that was much easier. Though it did take some time to set up initially.
       </p>
     </div>
   </body>
-  </body>
-</html>
+  </html>
+
